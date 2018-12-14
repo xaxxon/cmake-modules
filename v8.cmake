@@ -1,13 +1,21 @@
 
-
-message(looking for v8 libs in ${V8_LIB_DIR})
-
 set(V8_LIB_NAMES icui18n icuuc v8 v8_libbase v8_libplatform)
 
+IF(${V8_INCLUDE_DIR} STREQUAL "")
+    message(FATAL_ERROR "No V8_INCLUDE_DIR specified")
+ENDIF()
+IF(${V8_LIB_DIR} STREQUAL "")
+    message(FATAL_ERROR "No V8_LIB_DIR specified")
+ENDIF()
+
+message("looking for v8 libs in ${V8_LIB_DIR} and headers in ${V8_INCLUDE_DIR}")
+
+
 FOREACH(LIB_NAME ${V8_LIB_NAMES})
+    message("Finding v8 library: ${LIB_NAME}")
     FIND_LIBRARY(FOUND_LIB_${LIB_NAME} ${LIB_NAME} PATHS ${V8_LIB_DIR})
     IF(NOT FOUND_LIB_${LIB_NAME})
-        message(FATAL_ERROR "${LIB_NAME} NOT FOUND")
+        message(FATAL_ERROR "${LIB_NAME} NOT FOUND in V8_LIB_DIR: '${V8_LIB_DIR}'")
     ENDIF()
     add_library(v8::${LIB_NAME} UNKNOWN IMPORTED)
     set_target_properties(v8::${LIB_NAME} PROPERTIES
