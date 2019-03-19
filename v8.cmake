@@ -35,7 +35,7 @@ IF (NOT IS_DIRECTORY ${V8_LIB_DIR})
 ENDIF()
 
 
-message("looking for v8 libs in ${V8_LIB_DIR} for ${V8_BUILD_TYPE}")
+message("looking for v8 headers in ${V8_INCLUDE_DIR} and libs in ${V8_LIB_DIR}")
 
 set(V8_LIB_NAMES icui18n icuuc v8 v8_libbase v8_libplatform)
 
