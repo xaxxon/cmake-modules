@@ -1,5 +1,5 @@
 
-# V8_LIB_DIR is the base dir for the version to use.
+# V8_DIR is the base dir for the version to use.
 #   - it should have an 'include' dir that has the proper include files for all builds of the version
 #   - and directories for each build available, such as x64.release, x64.debug, etc. 
 
