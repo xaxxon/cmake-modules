@@ -3,40 +3,47 @@
 #   - it should have an 'include' dir that has the proper include files for all builds of the version
 #   - and directories for each build available, such as x64.release, x64.debug, etc. 
 
-
+# Make sure that V8_DIR directory is specified
 IF (NOT V8_DIR)
     message(FATAL_ERROR, "V8_DIR not specified, cannot find v8 library files")
     return()
 ENDIF()
 
+# and that it is a directory
 IF (NOT IS_DIRECTORY ${V8_DIR})
     message(FATAL_ERROR, "Specified V8_DIR '${V8_DIR}' isn't a directory")
     return()
 ENDIF()
 
-IF (NOT V8_BUILD_TYPE)
-   message(FATAL_ERROR, "V8_BUILD_TYPE not specified, cannot determine build variant to use (e.g. x64.release)")
-   return()
-ENDIF()
+file(TO_CMAKE_PATH "${V8_DIR}/include" V8_INCLUDE_DIR)
 
-
-
-set(V8_INCLUDE_DIR "${V8_DIR}/include")
-set(V8_LIB_DIR "${V8_DIR}/${V8_BUILD_TYPE}")
-
+# then sanity check that it at least has v8.h in it
 IF (NOT EXISTS "${V8_INCLUDE_DIR}/v8.h")
     message(FATAL_ERROR, "Could not find v8.h in ${V8_INCLUDE_DIR}")
     return()
 ENDIF()
 
+
+
+# make sure that V8_BUILD_TYPE is specified
+IF (NOT V8_BUILD_TYPE)
+   message(FATAL_ERROR, "V8_BUILD_TYPE not specified, cannot determine build variant to use (e.g. x64.release)")
+   return()
+ENDIF()
+
+FILE(TO_CMAKE_PATH "${V8_DIR}/${V8_BUILD_TYPE}" V8_LIB_DIR )
+
+# and that it's a directory
 IF (NOT IS_DIRECTORY ${V8_LIB_DIR})
     message(FATAL_ERROR, "Build type directory '${V8_LIB_DIR}' doesn't exist")
     return()
 ENDIF()
 
+# Each library file will be checked for below, so no need to sanity check lib dir
 
-message("looking for v8 headers in ${V8_INCLUDE_DIR} and libs in ${V8_LIB_DIR}")
 
+
+# Enumeration of all v8 library files
 set(V8_LIB_NAMES icui18n icuuc v8 v8_libbase v8_libplatform)
 
 FOREACH(LIB_NAME ${V8_LIB_NAMES})
@@ -51,6 +58,7 @@ FOREACH(LIB_NAME ${V8_LIB_NAMES})
             INTERFACE_INCLUDE_DIRECTORIES ${V8_INCLUDE_DIR})
 
     LIST(APPEND V8_LIBS v8::${LIB_NAME})
-    #MESSAGE("Lib: v8::${LIB_NAME}")
-    #MESSAGE("Found Lib: ${FOUND_LIB_${LIB_NAME}}")
 ENDFOREACH(LIB_NAME)
+
+message("Found v8 headers in ${V8_INCLUDE_DIR} and libs in ${V8_LIB_DIR}")
+
