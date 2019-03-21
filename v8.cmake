@@ -44,6 +44,7 @@ ENDIF()
 # Enumeration of all v8 library files
 set(V8_LIB_NAMES icui18n icuuc v8 v8_libbase v8_libplatform)
 
+# Check that each library exists
 FOREACH(LIB_NAME ${V8_LIB_NAMES})
     FIND_LIBRARY(FOUND_LIB_${LIB_NAME} ${LIB_NAME} PATHS ${V8_LIB_DIR})
 
@@ -59,6 +60,14 @@ FOREACH(LIB_NAME ${V8_LIB_NAMES})
 
     LIST(APPEND V8_LIBS v8::${LIB_NAME})
 ENDFOREACH(LIB_NAME)
+
+set(V8_BLOB_FILES natives_blob.bin snapshot_blob.bin)
+
+FOREACH(BLOB_NAME ${V8_BLOB_FILES})
+    IF (NOT EXISTS "${V8_LIB_DIR}/${BLOB_NAME}")
+        MESSAGE(FATAL_ERROR "Blob file ${BLOB_NAME} not found in ${V8_LIB_DIR}")
+    ENDIF()
+ENDFOREACH(BLOB_NAME)
 
 MESSAGE("Found v8 headers in ${V8_INCLUDE_DIR} and libs in ${V8_LIB_DIR}")
 
