@@ -1,7 +1,14 @@
 
+# Input variables:
 # V8_DIR is the base dir for the version to use.
 #   - it should have an 'include' dir that has the proper include files for all builds of the version
 #   - and directories for each build available, such as x64.release, x64.debug, etc. 
+# V8_BUILD_TYPE is the build type to use, such as x64.release or x64.debug
+#   - must be a directory in V8_DIR which contains the library and blob files from the corresponding build
+
+# Output variables
+# V8_INCLUDE_DIR is the location of the header files
+# V8_LIB_DIR is the location of the library and blob files
 
 # Make sure that V8_DIR directory is specified
 IF (NOT V8_DIR)
@@ -61,6 +68,7 @@ FOREACH(LIB_NAME ${V8_LIB_NAMES})
     LIST(APPEND V8_LIBS v8::${LIB_NAME})
 ENDFOREACH(LIB_NAME)
 
+# Enumeration of all the v8 blob files
 set(V8_BLOB_FILES natives_blob.bin snapshot_blob.bin)
 
 FOREACH(BLOB_NAME ${V8_BLOB_FILES})
